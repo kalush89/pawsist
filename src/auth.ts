@@ -42,7 +42,7 @@ export const {
         }
 
         const email = credentials.email as string;
-        const hash = saltAndHashPassword(credentials.password);
+        //const hash = saltAndHashPassword(credentials.password);
 
         let user: any = await db.user.findUnique({
           where: {
@@ -50,21 +50,32 @@ export const {
           },
         });
 
+        // if (!user) {
+        //   user = await db.user.create({
+        //     data: {
+        //       email,
+        //       hashedPassword: hash,
+        //     },
+        //   });
+        // } else {
+        //   const isMatch = bcrypt.compareSync(
+        //     credentials.password as string,
+        //     user.hashedPassword
+        //   );
+        //   if (!isMatch) {
+        //     throw new Error("Incorrect password.");
+        //   }
+        // }
+
         if (!user) {
-          user = await db.user.create({
-            data: {
-              email,
-              hashedPassword: hash,
-            },
-          });
-        } else {
-          const isMatch = bcrypt.compareSync(
-            credentials.password as string,
-            user.hashedPassword
-          );
-          if (!isMatch) {
-            throw new Error("Incorrect password.");
-          }
+          // User does not exist
+          throw new Error("Invalid login credentials.");
+        }
+
+        // Check if the password matches
+        const isMatch = await bcrypt.compareSync(credentials.password as string, user.hashedPassword);
+        if (!isMatch) {
+          throw new Error("Invalid login credentials.");
         }
 
         return user;

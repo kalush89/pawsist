@@ -1,7 +1,13 @@
 import React from "react";
 import { useFormStatus } from "react-dom";
 
-const AuthButton = () => {
+
+// Define the props interface
+interface AuthButtonProps {
+  label: string;
+}
+
+const AuthButton: React.FC<AuthButtonProps> = ({ label }) => {
   const { pending } = useFormStatus();
   return (
     <button
@@ -11,7 +17,7 @@ const AuthButton = () => {
         pending ? "bg-gray-600" : "bg-blue-600"
       } rounded-md w-full px-12 py-3 text-sm font-medium text-white`}
     >
-      {pending ? "Loading..." : "Sign in"}
+      {pending ? "Loading..." : label}
     </button>
   );
 };
