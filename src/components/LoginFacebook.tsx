@@ -6,11 +6,11 @@ import { FaFacebook } from "react-icons/fa";
 const LoginFacebook = () => {
   return (
     <div
-      onClick={() => login("github")}
-      className="w-full gap-4  hover:cursor-pointer mt-6 h-12 bg-black rounded-md p-4 flex justify-center items-center"
+      onClick={() => login("facebook")}
+      className="w-full gap-4 hover:cursor-pointer mt-2 px-6 py-4 border border-gray-400 bg-white rounded-md flex justify-center items-center"
     >
-      <FaFacebook className="text-white" />
-      <p className="text-white">Login with Facebook</p>
+      <FaFacebook className="text-navy-blue-shade-100" />
+      <p className="text-navy-blue-shade-100">Login with Facebook</p>
     </div>
   );
 };

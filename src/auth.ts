@@ -5,7 +5,6 @@ import  { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import {db} from "@/db";
-import { saltAndHashPassword } from "@/utils/helper";
 
 
 export const { 

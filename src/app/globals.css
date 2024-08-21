@@ -2,7 +2,184 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #1d1d1d;
-  color: white;
+/* body {
+  background-color: #eeeee4;
+  color: black;
+} */
+
+
+  @layer base {
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    /* Solid Background Color for the Entire Page */
+    body {
+      @apply bg-gray-100; /* Tailwind class for a solid background color */
+      color: black; /* Ensure text color contrasts with background */
+    }
+  }
+
+  @layer components {
+     /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-800;
+  }
+
+  /* Paragraphs */
+  p {
+    @apply text-gray-700;
+  }
+
+  /* Links */
+  a {
+    @apply text-navy-blue-tint-300 hover:text-navy-blue-shade-100 underline;
+  }
+
+  /* Form Labels */
+  label {
+    @apply block text-gray-700 mb-1;
+  }
+
+  /* Textareas */
+  textarea {
+    @apply border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 ;
+  }
+
+  /* Selects */
+  select {
+    @apply border border-gray-700 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 ;
+  }
+
+/* Global Input Styles */
+input {
+  @apply border border-gray-400 w-full rounded-md px-6 py-4 text-base focus:outline-none;
+  position: relative;
+  /* Directly applying the placeholder color as transparent */
+  &::placeholder {
+    color: transparent;
+  }
+   @supports (-moz-appearance: none) {
+    height: 56px; /* Adjust to match design */
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+input:disabled {
+  @apply bg-gray-100 cursor-not-allowed;
+}
+
+/* Optionally, define variants for different types of inputs */
+.input-primary {
+  @apply border-gray-300;
+}
+
+.input-primary:focus {
+  @apply border-gray-300 ring-0;
+}
+
+.input-secondary {
+  @apply border-gray-400;
+}
+
+.input-secondary:focus {
+  @apply border-gray-400 ring-0;
+}
+
+  /* Global Button Styles */ 
+  /* Base Button Styles */
+   .btn {
+    @apply inline-flex items-center justify-center rounded-md text-base font-medium transition-colors duration-150;
+  }
+
+  /* Button Sizes */
+  .btn-small {
+    @apply px-2 py-1 text-xs;
+  }
+
+  .btn-medium {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-medium-full {
+    @apply px-4 py-2 w-full text-sm;
+  }
+
+  .btn-large {
+    @apply px-6 py-3 text-base;
+  }
+
+  .btn-large-full {
+    @apply px-6 py-4 w-full text-base;
+  }
+
+  /* Lime Button Styles */
+  .btn-navy {
+    @apply bg-navy-blue-shade-100 text-white;
+  }
+
+  .btn-navy:hover {
+    @apply bg-navy-blue-shade-200;
+  }
+
+  .btn-lime:disabled {
+    @apply bg-lime-100 cursor-not-allowed;
+  }
+
+  /* Secondary Button Styles */
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-gray-300;
+  }
+
+  .btn-secondary:disabled {
+    @apply bg-gray-100 cursor-not-allowed;
+  }
+
+  /* Combine Size Variants with Button Types */
+  .btn-secondary-small {
+    @apply btn btn-small bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  .btn-secondary-medium {
+    @apply btn btn-medium bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  .btn-secondary-medium-full {
+    @apply btn btn-medium-full bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  .btn-secondary-large {
+    @apply btn btn-large bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  .btn-secondary-large-full {
+    @apply btn btn-large-full bg-gray-200 text-gray-800 border border-gray-300;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-md py-6;
+  }
+
+  /* Modal Overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center;
+  }
+
+  /* Modal Content */
+  .modal-content {
+    @apply bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto;
+  }
+
+  /* Navbar */
+  .navbar {
+    @apply bg-blue-600 text-white p-4 flex items-center justify-between;
+  }
+  
 }
