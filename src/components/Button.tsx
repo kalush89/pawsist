@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ label }) => {
     <button
       disabled={pending}
       type="submit"
-      className={`btn btn-large-full btn-navy ${pending ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`btn ripple btn-large-full btn-navy ${pending ? "opacity-50 cursor-not-allowed" : ""}`}
     >
       {pending ? "Loading..." : label}
     </button>

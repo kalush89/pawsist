@@ -31,17 +31,17 @@ export const {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "email@example.com",
+          placeholder: " ",
         },
-        password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password", placeholder: " " },
       },
       authorize: async (credentials) => {
         if (!credentials || !credentials.email || !credentials.password) {
-          return null;
+          return { error: "Empty fields" };
         }
 
         const email = credentials.email as string;
-        //const hash = saltAndHashPassword(credentials.password);
+
 
         let user: any = await db.user.findUnique({
           where: {
@@ -49,36 +49,38 @@ export const {
           },
         });
 
-        // if (!user) {
-        //   user = await db.user.create({
-        //     data: {
-        //       email,
-        //       hashedPassword: hash,
-        //     },
-        //   });
-        // } else {
-        //   const isMatch = bcrypt.compareSync(
-        //     credentials.password as string,
-        //     user.hashedPassword
-        //   );
-        //   if (!isMatch) {
-        //     throw new Error("Incorrect password.");
-        //   }
-        // }
-
-        if (!user) {
-          // User does not exist
-          throw new Error("Invalid login credentials.");
-        }
+        if (!user) return { error: "Invalid login credentials." }; 
 
         // Check if the password matches
         const isMatch = await bcrypt.compareSync(credentials.password as string, user.hashedPassword);
-        if (!isMatch) {
-          throw new Error("Invalid login credentials.");
-        }
+        if (!isMatch) return { error: "Invalid login credentials." }; 
 
         return user;
       },
     }),
   ],
+  // callbacks: {
+  //   async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+  //     // Log URLs to debug
+  //     console.log('Redirect URL:', url);
+  //     console.log('Base URL:', baseUrl);
+
+  //     try {
+  //       // Allow relative callback URLs
+  //       if (url.startsWith("/")) {
+  //         return `${baseUrl}${url}`;
+  //       }
+
+  //       // Allow callback URLs on the same origin
+  //       const parsedUrl = new URL(url);
+  //       if (parsedUrl.origin === baseUrl) {
+  //         return url;
+  //       }
+  //     } catch (error) {
+  //       console.error('Invalid URL encountered:', error);
+  //     }
+
+  //     return baseUrl;
+  //   },
+  // }
 })

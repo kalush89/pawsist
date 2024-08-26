@@ -2,10 +2,7 @@
 import React, { FormEvent, useState } from "react";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { getUserByEmail } from "@/actions/auth";
-import { saltAndHashPassword } from "@/utils/helper";
-import { db } from "@/db";
+import { registerWithCreds } from "@/actions/auth";
 
 const RegisterForm = () => {
   const [name, setName] = useState("");
@@ -17,8 +14,6 @@ const RegisterForm = () => {
   const [registrationError, setRegistrationError] = useState("");
 
   const router = useRouter();
-
-  type UserRole = "USER" | "ADMIN"; // Define UserRole type
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,53 +37,36 @@ const RegisterForm = () => {
     if (!password) {
       setPasswordError("Password is required");
       valid = false;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      valid = false;
     } else {
       setPasswordError("");
     }
 
     if (valid) {
+      const formData = new FormData();
+      formData.set("name", name);
+      formData.set("email", email);
+      formData.set("password", password);
+
       try {
-        // Check if the user already exists
-        const existingUser = await getUserByEmail(email as string);
-        if (existingUser) {
-          setRegistrationError("User already exists!");
-          return;
-        }
+        const result = await registerWithCreds(formData);
 
-        // Hash the password
-        const hashedPassword = saltAndHashPassword(password);
-
-        // Create the new user
-        const user = await db.user.create({
-          data: {
-            name,
-            email,
-            hashedPassword,
-            role: "USER" as UserRole,
-          },
-        });
-
-        if (!user) {
-          setRegistrationError("Something went wrong during registration!");
-          return;
-        }
-
-        // Sign in the user after registration
-        const loginResult = await signIn("credentials", {
-          email,
-          password,
-          redirect: false,
-        });
-
-        if (loginResult?.error) {
-          setRegistrationError("Wrong Email or Password!");
+        if (result.error === "Empty fields") {
+          setRegistrationError("All fields are required");
+        } else if (result.error === "User already exists") {
+          setRegistrationError("This user already exists!");
+        } else if (result.error === "Invalid email format") {
+          setRegistrationError("Email format invalid e.g. user@example.com");
+        } else if (result.error === "Something went wrong") {
+          setRegistrationError("Something went wrong! Please try again later.");
         } else {
-          router.replace("/dashboard"); // Redirect to dashboard on success
-          router.refresh(); // Refresh the page to reflect the login state
+          // Handle successful registration
+          router.replace("/dashboard");
         }
       } catch (error) {
-        console.log(error);
-        setRegistrationError("An unexpected error occurred!");
+        setRegistrationError("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -159,7 +137,10 @@ const RegisterForm = () => {
             <p className="text-red-500 text-sm mt-1">{passwordError}</p>
           )}
         </div>
-<p className="text-xs my-1">By signing up, you agree to the Terms and Conditions and Privacy Policy. California residents, see our CA Privacy Notice.</p>
+        <p className="text-xs my-1">
+          By signing up, you agree to the Terms and Conditions and Privacy
+          Policy. California residents, see our CA Privacy Notice.
+        </p>
         <div className="mt-2">
           <Button label={"Agree and Register"} />
         </div>

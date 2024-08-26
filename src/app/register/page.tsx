@@ -18,8 +18,8 @@ const RegisterUser = () => {
         </Link>
         </div>
         <RegisterForm />
-        <LoginGoogle />
-        <LoginFacebook />
+        <LoginGoogle label="Register with Google"/>
+        <LoginFacebook label="Register with Facebook"/>
         <p className="text-xs my-1">This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
 You also agree to receive product-related marketing emails from Grammarly, which you can unsubscribe from at any time.</p>
       </section>

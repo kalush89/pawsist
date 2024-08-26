@@ -4,9 +4,9 @@ import { signIn, signOut } from "@/auth";
 import { db } from "@/db";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
-import { saltAndHashPassword } from "@/utils/helper";
+import { saltAndHashPassword, validateEmail } from "@/utils/helper";
 
-
+type UserRole = "USER" | "ADMIN"; // Define UserRole type
 
 // Function to fetch a user by email
 export const getUserByEmail = async (email: string) => {
@@ -25,7 +25,7 @@ export const getUserByEmail = async (email: string) => {
 
 // Function to handle login with a provider
 export const login = async (provider: string) => {
-  await signIn(provider, { redirectTo: "/" });
+  await signIn(provider, { redirectTo: "/dashboard" });
   revalidatePath("/");
 };
 
@@ -35,71 +35,48 @@ export const logout = async () => {
   revalidatePath("/");
 };
 
-// // Function to handle login with credentials
-// export const loginWithCreds = async (formData: FormData) => {
-//   const rawFormData = {
-//     email: formData.get("email"),
-//     password: formData.get("password"),
-//     role: "USER" as UserRole,
-//     redirectTo: "/",
-//   };
-
-//   try {
-//     await signIn("credentials", rawFormData);
-//     revalidatePath("/");
-//   } catch (error: any) {
-//     if (error instanceof AuthError) {
-//       switch (error.type) {
-//         case "CredentialsSignin":
-//           return { error: "Invalid credentials!" };
-//         default:
-//           return { error: "Something went wrong!" };
-//       }
-//     }
-//     throw error;
-//   }
-// };
-
-
 // Function to handle registration with credentials
-// export const registerWithCreds = async (formData: FormData) => {
-//   const rawFormData = {
-//     name: formData.get("name"),
-//     email: formData.get("email"),
-//     password: formData.get("password"),
-//     role: "USER" as UserRole,
-//     redirectTo: "/",
-//   };
+export const registerWithCreds = async (formData: FormData) => {
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const password = formData.get("password");
 
-  // Check if the user already exists
-  // const existingUser = await getUserByEmail(formData.get("email") as string);
-  // if (existingUser) {
-  //   return { error: "User already exists!" };
-  // }
-  // const hash = saltAndHashPassword(rawFormData.password);
-  // try {
-  //   // Assuming you have a function to create a new user in the database
-  //   await db.user.create({
-  //     data: {
-  //       name: rawFormData.name as string,
-  //       email: rawFormData.email as string,
-  //       hashedPassword: hash,
-  //       role: rawFormData.role,
-  //     },
-  //   });
+  if (!name || !email || !password) {
+    return { error: "Empty fields" };
+  }
 
-  //   // Automatically log in the user after registration
-  //   await signIn("credentials", rawFormData);
-  //   revalidatePath("/");
-  // } catch (error: any) {
-  //   if (error instanceof AuthError) {
-  //     switch (error.type) {
-  //       case "CredentialsSignin":
-  //         return { error: "Invalid credentials!" };
-  //       default:
-  //         return { error: "Something went wrong!" };
-  //     }
-  //   }
-  //   throw error;
-  // }
-// };
+  const rawFormData = {
+    name: name as string,
+    email: email as string,
+    password: password as string,
+    role: "USER" as UserRole,
+  };
+
+  if (!validateEmail(rawFormData.email)) {
+    return { error: "Invalid email format" };
+  }
+
+  const existingUser = await getUserByEmail(rawFormData.email);
+  if (existingUser) {
+    return { error: "User already exists" };
+  }
+
+  try {
+    const hash = saltAndHashPassword(rawFormData.password);
+
+    await db.user.create({
+      data: {
+        name: rawFormData.name,
+        email: rawFormData.email,
+        hashedPassword: hash,
+        role: rawFormData.role,
+      },
+    });
+
+    await signIn("credentials", { ...rawFormData, redirect: false });
+    return { success: true };
+  } catch (error: any) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
+};

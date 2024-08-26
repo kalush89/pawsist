@@ -73,6 +73,7 @@ const config: Config = {
         },
       },
       'white': '#ffffff',
+     
     },
   },
   plugins: [],

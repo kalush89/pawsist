@@ -40,7 +40,10 @@ const LoginForm = () => {
           redirect: false,
         });
       
-        if (result?.error) {
+        //Handle various errors based on the response from signIn.
+        if (result?.error === "Empty fields") {
+          setLoginError("All fields are required!");
+        } else if (result?.error === "Invalid login credentials.") {
           setLoginError("Wrong Email or Password!");
         } else {
           router.replace("/dashboard");  // Redirect to dashboard on success

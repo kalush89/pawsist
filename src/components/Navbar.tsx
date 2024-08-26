@@ -6,6 +6,7 @@ import Logout from "./Logout";
 
 const Navbar = async () => {
   const session = await auth();
+  console.log("the session", session)
   return (
     <nav className="border-b bg-background w-full flex items-center">
       <div className="flex w-full items-center justify-between my-4">
@@ -18,17 +19,17 @@ const Navbar = async () => {
         </div>
 
         <div className="flex items-center gap-x-5">
-          {!session?.user ? (
+          {/* {!session?.user ? (
             <Link href="/sign-in">
               <div className="bg-blue-600 text-white text-sm px-4 py-2 rounded-sm">
                 Login
               </div>
             </Link>
-          ) : (
+          ) : ( */}
             <>
               <div className="flex items-center gap-x-2 text-sm">
                 {session?.user?.name}
-                {session?.user?.image && (
+                {/* {session?.user?.image && (
                   <Image
                     className="rounded-full"
                     width={30}
@@ -36,11 +37,11 @@ const Navbar = async () => {
                     alt="User Avatar"
                     src={session?.user?.image || ""}
                   />
-                )}
+                )} */}
               </div>
               <Logout />
             </>
-          )}
+          {/* )} */}
         </div>
       </div>
     </nav>

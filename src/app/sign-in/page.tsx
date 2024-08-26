@@ -13,8 +13,8 @@ const SignIn = () => {
             <a className="text-right" href="#">I don't have an account</a>
           </div>
           <LoginForm />
-          <LoginGoogle />
-          <LoginFacebook />
+          <LoginGoogle label="Sign in with Google" />
+          <LoginFacebook label="Sign in with Facebook" />
         </section>
       </div>
     </div>

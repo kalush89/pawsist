@@ -18,8 +18,8 @@ export default function Home() {
         </Link>
       </div>
       <LoginForm />
-      <LoginGoogle />
-      <LoginFacebook />
+      <LoginGoogle label="Login with Google" />
+      <LoginFacebook label="Login with Facebook"/>
     </section>
   </div>
   <div className="text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-bold text-gray-800 mt-8 lg:mt-0">
