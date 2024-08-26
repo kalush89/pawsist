@@ -4,13 +4,13 @@ import Button from "./Button";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -33,24 +33,27 @@ const LoginForm = () => {
     }
 
     if (valid) {
+      setIsLoading(true);
       try {
-        const result = await signIn("credentials", { 
+        const result = await signIn("credentials", {
           email,
           password,
           redirect: false,
         });
-      
-        //Handle various errors based on the response from signIn.
-        if (result?.error === "Empty fields") {
-          setLoginError("All fields are required!");
-        } else if (result?.error === "Invalid login credentials.") {
+
+        if (result?.error) {
+          // Handle errors returned from NextAuth's signIn function
           setLoginError("Wrong Email or Password!");
         } else {
-          router.replace("/dashboard");  // Redirect to dashboard on success
+          // Redirect to dashboard on successful login
+          router.replace("/dashboard");
           router.refresh();
         }
-      } catch(error) {
+      } catch (error) {
         console.log(error);
+        setLoginError("An unexpected error occurred.");
+      } finally {
+        setIsLoading(false);  // Ensure loading state is reset
       }
     }
   };
@@ -103,7 +106,7 @@ const LoginForm = () => {
         </div>
         
         <div className="mt-2">
-          <Button label={"Sign in"}  />
+          <Button label={"Sign in"} isLoading={isLoading} />
         </div>
       </form>
     </div>

@@ -37,7 +37,7 @@ export const {
       },
       authorize: async (credentials) => {
         if (!credentials || !credentials.email || !credentials.password) {
-          return { error: "Empty fields" };
+          return null;
         }
 
         const email = credentials.email as string;
@@ -49,38 +49,19 @@ export const {
           },
         });
 
-        if (!user) return { error: "Invalid login credentials." }; 
+        if (!user) {
+          return null; 
+        } 
 
         // Check if the password matches
-        const isMatch = await bcrypt.compareSync(credentials.password as string, user.hashedPassword);
-        if (!isMatch) return { error: "Invalid login credentials." }; 
+        const isMatch = await bcrypt.compare(credentials.password as string, user.hashedPassword);
+        if (!isMatch) {
+          return null;
+        } 
 
         return user;
       },
     }),
   ],
-  // callbacks: {
-  //   async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
-  //     // Log URLs to debug
-  //     console.log('Redirect URL:', url);
-  //     console.log('Base URL:', baseUrl);
-
-  //     try {
-  //       // Allow relative callback URLs
-  //       if (url.startsWith("/")) {
-  //         return `${baseUrl}${url}`;
-  //       }
-
-  //       // Allow callback URLs on the same origin
-  //       const parsedUrl = new URL(url);
-  //       if (parsedUrl.origin === baseUrl) {
-  //         return url;
-  //       }
-  //     } catch (error) {
-  //       console.error('Invalid URL encountered:', error);
-  //     }
-
-  //     return baseUrl;
-  //   },
-  // }
+ 
 })

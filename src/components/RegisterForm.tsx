@@ -12,6 +12,7 @@ const RegisterForm = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [registrationError, setRegistrationError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -45,6 +46,7 @@ const RegisterForm = () => {
     }
 
     if (valid) {
+      setIsLoading(true);
       const formData = new FormData();
       formData.set("name", name);
       formData.set("email", email);
@@ -55,18 +57,24 @@ const RegisterForm = () => {
 
         if (result.error === "Empty fields") {
           setRegistrationError("All fields are required");
+          setIsLoading(false);
         } else if (result.error === "User already exists") {
           setRegistrationError("This user already exists!");
+          setIsLoading(false);
         } else if (result.error === "Invalid email format") {
           setRegistrationError("Email format invalid e.g. user@example.com");
+          setIsLoading(false);
         } else if (result.error === "Something went wrong") {
           setRegistrationError("Something went wrong! Please try again later.");
+          setIsLoading(false);
         } else {
+          setIsLoading(false);
           // Handle successful registration
           router.replace("/dashboard");
         }
       } catch (error) {
         setRegistrationError("An unexpected error occurred. Please try again.");
+        setIsLoading(false);
       }
     }
   };
@@ -142,7 +150,7 @@ const RegisterForm = () => {
           Policy. California residents, see our CA Privacy Notice.
         </p>
         <div className="mt-2">
-          <Button label={"Agree and Register"} />
+          <Button label={"Agree and Register"} isLoading={isLoading}/>
         </div>
       </form>
     </div>
