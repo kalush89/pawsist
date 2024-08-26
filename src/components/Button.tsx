@@ -1,5 +1,6 @@
 import React from "react";
 import { useFormStatus } from "react-dom";
+import Spinner from "./Spinner";
 
 // Define the props interface
 interface ButtonProps {
@@ -8,14 +9,13 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ label, isLoading }) => {
-  const { pending } = useFormStatus();
   return (
     <button
-      disabled={isLoading}
+      // disabled={isLoading}
       type="submit"
-      className={`btn ripple btn-large-full btn-navy ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`btn ripple btn-large-full btn-navy ${isLoading ? "cursor-not-allowed" : ""}`}
     >
-      {isLoading ? "Loading..." : label}
+      {isLoading ? <Spinner /> : label}
     </button>
   );
 };

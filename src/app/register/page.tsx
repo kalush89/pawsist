@@ -6,14 +6,14 @@ import Link from "next/link";
 
 const RegisterUser = () => {
   return (
-    <div className="flex justify-center items-center mt-10">
-      <div className="card w-[450px] flex justify-center">
-        <section className="flex flex-col w-[400px]">
-        <div className="flex flex-col lg:flex-row justify-between mt-5 mb-5">
-        <h1 className="text-2xl sm:text-3xl lg:text-3xl text-left">
-          Register
-        </h1>
-        <Link className="text-sm sm:text-base lg:text-base text-right mt-2 lg:mt-0" href="/">
+    <div className="flex justify-center items-center mt-10 px-4 sm:px-6 lg:px-8">
+    <div className="card w-full max-w-lg flex justify-center">
+      <section className="flex flex-col w-full px-4 sm:px-6">
+        <div className="flex sm:flex-row justify-between items-start sm:items-center mt-5 mb-5">
+          <h2 className="text-xl sm:text-2xl lg:text-2xl text-left">
+            Register
+          </h2>
+          <Link className="text-sm sm:text-base lg:text-base text-right mt-2 sm:mt-0" href="/">
           I have an account
         </Link>
         </div>
