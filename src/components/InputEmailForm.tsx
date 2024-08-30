@@ -1,8 +1,9 @@
 "use client";
 import React, { FormEvent, useState } from "react";
+import { sendVerificationTokenEmail } from "@/actions/sendVerificationTokenEmail";
 import Button from "./Button";
 
-const PREmailForm = () => {
+const InputEmailForm = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [formMessage, setFormMessage] = useState("");
@@ -20,16 +21,10 @@ const PREmailForm = () => {
 
     setIsLoading(true);
     try {
-      // Make an API request to send the password reset link (replace with your actual API call)
-      const response = await fetch("/api/send-reset-link", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      // Make an API request to send the password reset link 
+      const response = await sendVerificationTokenEmail({ emailId: email });
 
-      if (response.ok) {
+      if (response) {
         setFormMessage("If there's a Pawsist account connected to this email address, we’ll email you password reset instructions. If you don’t receive the email, please try again and make sure you enter the email address associated with your account.");
       } else {
         // Handle specific error messages based on the response if needed
@@ -77,4 +72,4 @@ const PREmailForm = () => {
   );
 };
 
-export default PREmailForm;
+export default InputEmailForm;

@@ -7,8 +7,8 @@ import Link from "next/link";
 const RegisterUser = () => {
   return (
     <div className="flex justify-center items-center mt-10 px-4 sm:px-6 lg:px-8">
-    <div className="card w-full max-w-lg flex justify-center">
-      <section className="flex flex-col w-full px-4 sm:px-6">
+    <div className="card w-full max-w-lg flex justify-center lg:w-[410px] mb-5">
+    <section className="flex flex-col w-full px-4 sm:px-5 md:px-5 lg:w-[400px]">
         <div className="flex sm:flex-row justify-between items-start sm:items-center mt-5 mb-5">
           <h2 className="text-xl sm:text-2xl lg:text-2xl text-left">
             Register
