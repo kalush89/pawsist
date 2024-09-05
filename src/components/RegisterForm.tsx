@@ -4,7 +4,12 @@ import Button from "./Button";
 import { useRouter } from "next/navigation";
 import { registerWithCreds } from "@/actions/auth";
 
-const RegisterForm = () => {
+interface Props {
+  setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserEmail: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const RegisterForm: React.FC<Props> = ({setIsRegistered, setUserEmail}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,7 +75,9 @@ const RegisterForm = () => {
         } else {
           setIsLoading(false);
           // Handle successful registration
-          router.replace("/dashboard");
+         // router.replace("/dashboard");
+         setIsRegistered(true);
+         setUserEmail(email);
         }
       } catch (error) {
         setRegistrationError("An unexpected error occurred. Please try again.");

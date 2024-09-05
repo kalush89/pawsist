@@ -1,7 +1,8 @@
 "use client";
 import React, { FormEvent, useState } from "react";
-import { sendVerificationTokenEmail } from "@/actions/sendVerificationTokenEmail";
+import { sendVerificationTokenEmail } from "@/utils/helper";
 import Button from "./Button";
+import { nanoid } from "nanoid";
 
 const InputEmailForm = () => {
   const [email, setEmail] = useState("");
@@ -21,8 +22,10 @@ const InputEmailForm = () => {
 
     setIsLoading(true);
     try {
+      const token = nanoid(33);
+      const htmlBody = `Click <a href="http://localhost:3000/resetUserPassword/${token}">here</a> to reset your password!`;
       // Make an API request to send the password reset link 
-      const response = await sendVerificationTokenEmail({ emailId: email });
+      const response = await sendVerificationTokenEmail({ emailId: email, htmlBody, token });
 
       if (response) {
         setFormMessage("If there's a Pawsist account connected to this email address, we’ll email you password reset instructions. If you don’t receive the email, please try again and make sure you enter the email address associated with your account.");

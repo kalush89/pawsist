@@ -24,12 +24,14 @@ model User {
   email         String?         @unique
   hashedPassword String?
   emailVerified DateTime?       @map("verifiedAt")
+  verificationCode        String?   // Verification code sent to the user
+  verificationCodeExpires DateTime? // Expiration time of the verification code
   image         String?
   accounts      Account[]
   sessions      Session[]
   role          UserRole?       @default(USER)
   // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  Authenticators Authenticator[]
   dogs          Dog[]
  
   createdAt DateTime @default(now())

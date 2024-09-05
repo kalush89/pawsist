@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { User } from "next-auth"
 import Google from "next-auth/providers/google";
 import Facebook from "next-auth/providers/facebook"
 import  { PrismaAdapter } from "@auth/prisma-adapter";
@@ -6,6 +6,11 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import {db} from "@/db";
 
+
+interface ExtendedUser extends User {
+  id: string; // Ensure we have the id property
+  emailVerified: Date | null; // Extend the type to include emailVerified
+}
 
 export const { 
     handlers, 
@@ -63,5 +68,20 @@ export const {
       },
     }),
   ],
- 
-})
+  callbacks: {
+    async signIn({ user, account }) {
+      // Type guard to ensure user is an ExtendedUser
+      const extendedUser = user as ExtendedUser;
+
+      if ((account?.provider === "google" || account?.provider === "facebook") && extendedUser.emailVerified === null) {
+        // Update emailVerified field if null
+        await db.user.update({
+          where: { id: extendedUser.id },
+          data: { emailVerified: new Date() },
+        });
+      }
+
+      return true;
+    },
+  },
+});

@@ -1,9 +1,12 @@
+'use server'
 import { getUserByEmail } from "@/actions/auth";
 import { db } from "@/db";
 import bcrypt from "bcryptjs";
 import { addHours } from "date-fns";
 import { nanoid } from "nanoid";
 import nodemailer from "nodemailer";
+import crypto from "crypto";
+
 export const saltAndHashPassword = (password: any) => {
   const saltRounds = 10; // Adjust the cost factor according to your security requirements
   const salt = bcrypt.genSaltSync(saltRounds); // Synchronously generate a salt
@@ -15,6 +18,10 @@ export const saltAndHashPassword = (password: any) => {
 export const validateEmail = (email: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+};
+
+export const generateVerificationCode = () => {
+  return crypto.randomInt(100000, 999999).toString();  // Generates a secure 6-digit code
 };
 
 // Helper function to send the emails
@@ -47,25 +54,34 @@ export const sendAppEmail = async (emailId: string, subject: string, htmlBody: s
 }
 
 // Send emails concerning tokens
-export const sendVerificationTokenEmail = async ({ emailId }: { emailId: string }) => {
+export const sendVerificationTokenEmail = async ({
+  emailId,
+  htmlBody,
+  token,
+}: {
+  emailId: string;
+  htmlBody: string;
+  token?: string;
+}) => {
   const response = await getUserByEmail(emailId);
-  if (response) {
-      const token = nanoid(33);
-      const htmlBody = `Click <a href="http://localhost:3000/resetUserPassword/${token}">here</a> to reset your password!`;
-      await sendAppEmail(emailId, "Hello ✔", htmlBody);
   
+  if (response) {
+    // Send the email
+    await sendAppEmail(emailId, "Hello ✔", htmlBody);
 
-      //save token in the database
-      await db.verificationToken.create({
-          data: {
-              identifier: emailId!,  // User's email
-              token: token,
-              expires: addHours(new Date(), 1),  // Token expires in 1 hour
-          },
-      });
+    // Save token in the database
+    await db.verificationToken.create({
+      data: {
+        identifier: emailId,  // User's email
+        token: token as string,
+        expires: addHours(new Date(), 1),  // Token expires in 1 hour
+      },
+    });
 
   } else {
-      console.log('User no dey your db');
+    console.log('User not found in your db');
+    return false;
   }
+
   return true;
 };
